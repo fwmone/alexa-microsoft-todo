@@ -1,6 +1,6 @@
 # Alexa to Microsoft To Do connection
 
-This small PHP script enables the connection from Alexa to Microsoft To Do, when being integrated as an endpoint into your skill (https://developer.amazon.com/alexa/console/ask). My skill is available at https://www.amazon.de/dp/B0CTHRHFQ2/ (To Do tasklist). The shopping cart list is still under Amazon review.
+This small PHP script enables the connection from Alexa to Microsoft To Do, when being integrated as an endpoint into your skill (https://developer.amazon.com/alexa/console/ask). My skill is available at https://www.amazon.de/dp/B0CTHRHFQ2/ (To Do tasklist) and https://www.amazon.de/dp/B0D93Z2BZV/ (To Do Shopping Cart list).
 
 ## Requirements
 
