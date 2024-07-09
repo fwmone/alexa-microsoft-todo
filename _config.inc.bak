@@ -1,0 +1,6 @@
+<?
+
+$config = ["skill"];
+
+$config["skill"]["tasklist"] = array("id" => "amzn1.ask.skill.1234"); // Amazon Skill ID for tasklist connection
+$config["skill"]["shoppinglist"] = array("id" => "amzn1.ask.skill.1234"); // Amazon Skill ID for shoppinglist connection
