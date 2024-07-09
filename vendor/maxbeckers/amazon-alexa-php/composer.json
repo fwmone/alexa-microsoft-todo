@@ -1,0 +1,59 @@
+{
+  "name": "maxbeckers/amazon-alexa-php",
+  "type": "library",
+  "description": "Php library for amazon echo (alexa) skill development.",
+  "keywords": [
+    "alexa",
+    "alexa-skill",
+    "alexa-sdk",
+    "amazon-alexa",
+    "amazon-alexa-php",
+    "amazon-echo",
+    "amazon-echo-php",
+    "alexa-skill-php",
+    "echo",
+    "php",
+    "php7",
+    "php71",
+    "php72",
+    "skill",
+    "alexa-custom-skill",
+    "library",
+    "ssml"
+  ],
+  "license": "MIT",
+  "support": {
+    "issues": "https://github.com/maxbeckers/amazon-alexa-php/issues",
+    "source": "https://github.com/maxbeckers/amazon-alexa-php"
+  },
+  "authors": [
+    {
+      "name": "Maximilian Beckers",
+      "email": "beckers.maximilian@gmail.com",
+      "role": "Developer"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">=7.0",
+    "guzzlehttp/guzzle": ">=6.0"
+  },
+  "require-dev": {
+    "friendsofphp/php-cs-fixer": ">=2.8",
+    "phpunit/phpunit": ">=6.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "MaxBeckers\\AmazonAlexa\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "MaxBeckers\\AmazonAlexa\\Test\\": "test/Test/"
+    }
+  },
+  "scripts": {
+    "test": "phpunit",
+    "cs": "php-cs-fixer fix --config=.php_cs.php -v --allow-risky=yes"
+  }
+}
