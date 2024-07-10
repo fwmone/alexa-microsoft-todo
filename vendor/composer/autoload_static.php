@@ -13,6 +13,10 @@ class ComposerStaticInit24ef6c7ad565e66c856794174f0beb32
     );
 
     public static $prefixLengthsPsr4 = array (
+        'U' => 
+        array (
+            'Utopia\\Locale\\' => 14,
+        ),
         'P' => 
         array (
             'Psr\\Http\\Message\\' => 17,
@@ -31,10 +35,14 @@ class ComposerStaticInit24ef6c7ad565e66c856794174f0beb32
     );
 
     public static $prefixDirsPsr4 = array (
+        'Utopia\\Locale\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/utopia-php/locale/src/Locale',
+        ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-message/src',
-            1 => __DIR__ . '/..' . '/psr/http-factory/src',
+            0 => __DIR__ . '/..' . '/psr/http-factory/src',
+            1 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (

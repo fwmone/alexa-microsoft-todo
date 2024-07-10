@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "24ef6c7ad565e66c856794174f0beb32",
+    "content-hash": "d6504520fea3f67a16caa16706406677",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
@@ -666,6 +666,57 @@
                 }
             ],
             "time": "2023-01-24T14:02:46+00:00"
+        },
+        {
+            "name": "utopia-php/locale",
+            "version": "0.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/utopia-php/locale.git",
+                "reference": "9de05231484ab29f61e6557e7ae494cbcf31cf41"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/utopia-php/locale/zipball/9de05231484ab29f61e6557e7ae494cbcf31cf41",
+                "reference": "9de05231484ab29f61e6557e7ae494cbcf31cf41",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.3",
+                "vimeo/psalm": "4.0.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Utopia\\Locale\\": "src/Locale"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Eldad Fux",
+                    "email": "eldad@appwrite.io"
+                }
+            ],
+            "description": "A simple locale library to manage application translations",
+            "keywords": [
+                "framework",
+                "locale",
+                "php",
+                "upf",
+                "utopia"
+            ],
+            "support": {
+                "issues": "https://github.com/utopia-php/locale/issues",
+                "source": "https://github.com/utopia-php/locale/tree/0.6.0"
+            },
+            "time": "2021-09-19T20:15:14+00:00"
         }
     ],
     "packages-dev": [],

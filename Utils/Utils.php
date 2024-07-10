@@ -22,7 +22,7 @@ class Utils {
         return false;
     }
 
-    public function getList($request, $list) : string {
+    public function getList($request, $list, $locale) : string {
         require "_config.inc.php";
 
         $mysqli = new mysqli($config["database"]["host"], $config["database"]["user"], $config["database"]["password"], $config["database"]["database"]);
@@ -54,8 +54,13 @@ class Utils {
                         $listId = $myList->id;
                     }
                 } elseif ($list == "einkaufsliste") {
-                    if (stristr($myList->displayName, "einkaufsliste") || stristr($myList->displayName, "einkaufszettel")) {
-                        $listId = $myList->id;
+                    $possibilities = explode("|", $locale->getText('skill.list.einkaufsliste.possibilities'));
+                    
+                    foreach($possibilities as $possibility) {
+                        if (stristr($myList->displayName, $possibility)) {
+                            $listId = $myList->id;
+                            break;
+                        }
                     }
                 }
             }
@@ -64,6 +69,10 @@ class Utils {
         }
 
         return $listId;
+    }
+
+    public function getLanguageFromIsoCode(string $isoCode) {
+        return substr($isoCode, 0, 2);
     }
 }
 

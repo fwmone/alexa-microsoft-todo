@@ -16,12 +16,17 @@ class LaunchRequestHandler extends AbstractRequestHandler {
      */
     protected $utils;
 
+    /**
+     * @var Utopia\Locale\Locale
+     */
+    protected $locale;
 
-    public function __construct(ResponseHelper $responseHelper, array $supportedApplicationIds) {
+
+    public function __construct(ResponseHelper $responseHelper, array $supportedApplicationIds, Utopia\Locale\Locale $locale) {
         $this->responseHelper = $responseHelper;
         $this->supportedApplicationIds = $supportedApplicationIds;
-
         $this->utils = new Utils();
+        $this->locale = $locale;
     }
 
     public function supportsRequest(Request $request): bool {
@@ -30,9 +35,9 @@ class LaunchRequestHandler extends AbstractRequestHandler {
 
     public function handleRequest(Request $request): Response {
         if ($this->utils->getAccountLinked($request)) {
-            return $this->responseHelper->respond("Hallo! Du kannst mir jederzeit sagen, was ich zu deiner To Do-Liste hinzufügen soll.", true);
+            return $this->responseHelper->respond($this->locale->getText('skill.standard.launch.hello'), true);
         } else {
-            return $this->responseHelper->respond("Hallo! Bitte verknüpfe deinen Microsoft-Account mit diesem Skill über die Alexa-App oder die Amazon-Seite dieses Skills, um Einträge zu deiner To Do-Liste hinzufügen zu können.", true);
+            return $this->responseHelper->respond($this->locale->getText('skill.standard.launch.noLinkedAccount'), true);
         }
     }    
 }
@@ -44,10 +49,16 @@ class SessionEndedRequestHandler extends AbstractRequestHandler {
      */
     protected $responseHelper;
 
-    public function __construct(ResponseHelper $responseHelper, array $supportedApplicationIds) {
+    /**
+     * @var Utopia\Locale\Locale
+     */
+    protected $locale;
+
+    
+    public function __construct(ResponseHelper $responseHelper, array $supportedApplicationIds, Utopia\Locale\Locale $locale) {
         $this->responseHelper = $responseHelper;
         $this->supportedApplicationIds = $supportedApplicationIds;
-
+        $this->locale = $locale;
     }
 
     public function supportsRequest(Request $request): bool {
@@ -55,6 +66,6 @@ class SessionEndedRequestHandler extends AbstractRequestHandler {
     }
 
     public function handleRequest(Request $request): Response {
-        return $this->responseHelper->respond("Tschüss, bis zum nächsten Mal!", true);
+        return $this->responseHelper->respond($this->locale->getText('skill.standard.sessionEnded'), true);
     }    
 }
