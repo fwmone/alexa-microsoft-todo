@@ -4,14 +4,16 @@ use MaxBeckers\AmazonAlexa\Helper\ResponseHelper;
 use MaxBeckers\AmazonAlexa\Request\Request;
 use MaxBeckers\AmazonAlexa\RequestHandler\Basic\CancelRequestHandler;
 use MaxBeckers\AmazonAlexa\RequestHandler\Basic\FallbackRequestHandler;
-use MaxBeckers\AmazonAlexa\RequestHandler\Basic\HelpRequestHandler;
 use MaxBeckers\AmazonAlexa\RequestHandler\Basic\NavigateHomeRequestHandler;
 use MaxBeckers\AmazonAlexa\RequestHandler\Basic\StopRequestHandler;
 use MaxBeckers\AmazonAlexa\RequestHandler\RequestHandlerRegistry;
 use MaxBeckers\AmazonAlexa\Validation\RequestValidator;
 
 require './vendor/autoload.php';
+require 'Handlers/StandardHandler.php';
+require 'Handlers/BuiltInIntentHandler.php';
 require 'Handlers/RequestHandler.php';
+require 'Utils/Utils.php';
 
 /**
  * Simple example for request handling workflow with help example
@@ -41,16 +43,21 @@ if ($requestBody) {
     $addToListIntentRH = new AddToListIntentRequestHandler($responseHelper, $skillId, $list);
     $removeFromListIntentRH = new RemoveFromListIntentRequestHandler($responseHelper, $skillId, $list);
 
+    $launchRH = new LaunchRequestHandler($responseHelper, $skillId);
+    $sessionEndedRH = new SessionEndedRequestHandler($responseHelper, $skillId);
+
     $cancelRH = new CancelRequestHandler($responseHelper, 'cancel text', $skillId);
     $fallbackRH = new FallbackRequestHandler($responseHelper, 'fallback text', $skillId);
     $navigateHomeRH = new NavigateHomeRequestHandler($responseHelper, 'navigate home text', $skillId);
-    $helpRH = new HelpRequestHandler($responseHelper, 'help text', $skillId);
+    $helpRH = new CustomHelpRequestHandler($responseHelper, $skillId, $list, $alexaRequest);
     $stopRH = new StopRequestHandler($responseHelper, 'stop text', $skillId);
 
     // add handlers to registry
     $requestHandlerRegistry = new RequestHandlerRegistry([
         $addToListIntentRH,
         $removeFromListIntentRH,
+        $launchRH,
+        $sessionEndedRH,
         $cancelRH,
         $fallbackRH,
         $navigateHomeRH,
