@@ -6,65 +6,6 @@ use MaxBeckers\AmazonAlexa\Request\Request\Standard\IntentRequest;
 use MaxBeckers\AmazonAlexa\RequestHandler\AbstractRequestHandler;
 use MaxBeckers\AmazonAlexa\Response\Response;
 
-class Utils {
-    public function prepareInput(string $input): array {
-        if (stristr($input, " und ")) {
-            $returnValue = array();
-            array_walk(explode(" und ", $input), function ($value, $key) use (&$returnValue) {
-                $returnValue[$key] = ucfirst($value);
-            });
-
-            return $returnValue;
-        } else {
-            return array(ucfirst($input));
-        }
-    }
-
-    public function getList($request, $list) : string {
-        require "_config.inc.php";
-
-        $mysqli = new mysqli($config["database"]["host"], $config["database"]["user"], $config["database"]["password"], $config["database"]["database"]);
-        $result = $mysqli->query("SELECT * FROM lists WHERE userId='".$request->session->user->userId."' AND list='".$list."'");
-        while($obj = $result->fetch_object()) {
-            $listId = $obj->listId;
-        }
-
-        if (!$listId) {
-            // Start a new Guzzle client
-            $client = new \GuzzleHttp\Client();
-
-            // Set up headers
-            $headers = [
-                'Authorization' => 'Bearer ' . $request->session->user->accessToken,
-            ];
-
-            $response = $client->request(
-                'GET',
-                'https://graph.microsoft.com/v1.0/me/todo/lists',
-                array('headers' => $headers)
-            );
-
-            $lists = json_decode( $response->getBody() );
-            file_put_contents("output.txt", print_r($lists, true));
-            foreach ($lists->value as $myList) {
-                if ($list == "aufgabenliste") {
-                    if ($myList->wellknownListName == "defaultList") {
-                        $listId = $myList->id;
-                    }
-                } elseif ($list == "einkaufsliste") {
-                    if (stristr($myList->displayName, "einkaufsliste") || stristr($myList->displayName, "einkaufszettel")) {
-                        $listId = $myList->id;
-                    }
-                }
-            }
-
-            $result = $mysqli->query("INSERT INTO lists (userId, list, listId) VALUES ('".$request->session->user->userId."', '".$list."', '".$listId."') ON DUPLICATE KEY UPDATE listId='".$listId."'");
-        }
-
-        return $listId;
-    }
-}
-
 class CustomRequestHandler extends AbstractRequestHandler { 
     /**
      * @var ResponseHelper
@@ -161,7 +102,6 @@ class AddToListIntentRequestHandler extends CustomRequestHandler {
     }
 }
 
-
 class RemoveFromListIntentRequestHandler extends CustomRequestHandler {
     public function __construct(ResponseHelper $responseHelper, array $supportedApplicationIds, $list) {
         parent::__construct($responseHelper, $supportedApplicationIds, $list);
@@ -230,3 +170,4 @@ class RemoveFromListIntentRequestHandler extends CustomRequestHandler {
 
     }
 }
+

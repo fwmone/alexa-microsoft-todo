@@ -1,6 +1,11 @@
 <?
 
-$config = ["skill"];
+$config = ["skill", "database"];
 
 $config["skill"]["tasklist"] = array("id" => "amzn1.ask.skill.1234"); // Amazon Skill ID for tasklist connection
 $config["skill"]["shoppinglist"] = array("id" => "amzn1.ask.skill.1234"); // Amazon Skill ID for shoppinglist connection
+
+$config["database"]["host"] = "localhost";
+$config["database"]["user"] = "";
+$config["database"]["password"] = "";
+$config["database"]["database"] = "";
