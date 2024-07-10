@@ -8,12 +8,15 @@ use MaxBeckers\AmazonAlexa\RequestHandler\Basic\NavigateHomeRequestHandler;
 use MaxBeckers\AmazonAlexa\RequestHandler\Basic\StopRequestHandler;
 use MaxBeckers\AmazonAlexa\RequestHandler\RequestHandlerRegistry;
 use MaxBeckers\AmazonAlexa\Validation\RequestValidator;
+use Utopia\Locale\Locale;
 
 require './vendor/autoload.php';
 require 'Handlers/StandardHandler.php';
 require 'Handlers/BuiltInIntentHandler.php';
 require 'Handlers/RequestHandler.php';
 require 'Utils/Utils.php';
+
+$utils = new Utils();
 
 /**
  * Simple example for request handling workflow with help example
@@ -37,19 +40,23 @@ if ($requestBody) {
     $validator = new RequestValidator();
     $validator->validate($alexaRequest);
 
+    // Localization
+    Locale::setLanguageFromJSON($alexaRequest->request->locale, "Localizations/".$utils->getLanguageFromIsoCode($alexaRequest->request->locale).".json"); 
+    $locale = new Locale($alexaRequest->request->locale);
+
     // create all needed handlers
     $responseHelper = new ResponseHelper();
 
-    $addToListIntentRH = new AddToListIntentRequestHandler($responseHelper, $skillId, $list);
-    $removeFromListIntentRH = new RemoveFromListIntentRequestHandler($responseHelper, $skillId, $list);
+    $addToListIntentRH = new AddToListIntentRequestHandler($responseHelper, $skillId, $list, $locale);
+    $removeFromListIntentRH = new RemoveFromListIntentRequestHandler($responseHelper, $skillId, $list, $locale);
 
-    $launchRH = new LaunchRequestHandler($responseHelper, $skillId);
-    $sessionEndedRH = new SessionEndedRequestHandler($responseHelper, $skillId);
+    $launchRH = new LaunchRequestHandler($responseHelper, $skillId, $locale);
+    $sessionEndedRH = new SessionEndedRequestHandler($responseHelper, $skillId, $locale);
 
     $cancelRH = new CancelRequestHandler($responseHelper, 'cancel text', $skillId);
     $fallbackRH = new FallbackRequestHandler($responseHelper, 'fallback text', $skillId);
     $navigateHomeRH = new NavigateHomeRequestHandler($responseHelper, 'navigate home text', $skillId);
-    $helpRH = new CustomHelpRequestHandler($responseHelper, $skillId, $list, $alexaRequest);
+    $helpRH = new CustomHelpRequestHandler($responseHelper, $skillId, $list, $alexaRequest, $locale);
     $stopRH = new StopRequestHandler($responseHelper, 'stop text', $skillId);
 
     // add handlers to registry

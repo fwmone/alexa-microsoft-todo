@@ -32,12 +32,18 @@ class CustomRequestHandler extends AbstractRequestHandler {
      */
     protected $client;
 
+    /**
+     * @var Utopia\Locale\Locale
+     */
+    protected $locale;
 
-    public function __construct(ResponseHelper $responseHelper, array $supportedApplicationIds, $list) {
+
+    public function __construct(ResponseHelper $responseHelper, array $supportedApplicationIds, $list, Utopia\Locale\Locale $locale) {
         $this->responseHelper = $responseHelper;
         $this->supportedApplicationIds = $supportedApplicationIds;
         $this->list = $list;
         $this->utils = new Utils();
+        $this->locale = $locale;
 
         // Start a new Guzzle client
         $this->client = new \GuzzleHttp\Client();
@@ -54,8 +60,8 @@ class CustomRequestHandler extends AbstractRequestHandler {
 }
 
 class AddToListIntentRequestHandler extends CustomRequestHandler {
-    public function __construct(ResponseHelper $responseHelper, array $supportedApplicationIds, $list) {
-        parent::__construct($responseHelper, $supportedApplicationIds, $list);
+    public function __construct(ResponseHelper $responseHelper, array $supportedApplicationIds, $list, $locale) {
+        parent::__construct($responseHelper, $supportedApplicationIds, $list, $locale);
     }
 
     public function supportsRequest(Request $request): bool {
@@ -63,7 +69,7 @@ class AddToListIntentRequestHandler extends CustomRequestHandler {
     }
 
     public function handleRequest(Request $request): Response {
-        $this->listId = $this->utils->getList($request, $this->list);
+        $this->listId = $this->utils->getList($request, $this->list, $this->locale);
         $input = $this->utils->prepareInput($request->request->intent->slots[0]->value);
 
 
@@ -86,14 +92,14 @@ class AddToListIntentRequestHandler extends CustomRequestHandler {
 
             }
 
-            return $this->responseHelper->respond("Ich habe ".implode(" und ", $input)." zur To Do ".ucfirst($this->list)." hinzugefügt.", true);
+            return $this->responseHelper->respond($this->locale->getText('skill.intent.addItem', [ 'input' => implode(" ".$this->locale->getText("generic.and")." ", $input), 'list' => $this->locale->getText('skill.list.'.$this->list) ]), true);
 
         // Decode any exceptions Guzzle throws
         } catch (GuzzleHttp\Exception\ClientException $e) {
             $response = $e->getResponse();
             $responseBodyAsString = $response->getBody()->getContents();
 
-            return $this->responseHelper->respond("Das hat leider nicht geklappt. Der Fehler lautet: " . $responseBodyAsString, true);
+            return $this->responseHelper->respond($this->locale->getText('skill.intent.error', [ 'error' => $responseBodyAsString ]), true);
 
             echo $responseBodyAsString;
             exit();
@@ -103,8 +109,8 @@ class AddToListIntentRequestHandler extends CustomRequestHandler {
 }
 
 class RemoveFromListIntentRequestHandler extends CustomRequestHandler {
-    public function __construct(ResponseHelper $responseHelper, array $supportedApplicationIds, $list) {
-        parent::__construct($responseHelper, $supportedApplicationIds, $list);
+    public function __construct(ResponseHelper $responseHelper, array $supportedApplicationIds, $list, $locale) {
+        parent::__construct($responseHelper, $supportedApplicationIds, $list, $locale);
     }
 
     public function supportsRequest(Request $request): bool {
@@ -112,7 +118,7 @@ class RemoveFromListIntentRequestHandler extends CustomRequestHandler {
     }
 
     public function handleRequest(Request $request): Response {
-        $this->listId = $this->utils->getList($request, $this->list);
+        $this->listId = $this->utils->getList($request, $this->list, $this->locale);
         $input = $this->utils->prepareInput($request->request->intent->slots[0]->value);
 
 
@@ -151,10 +157,10 @@ class RemoveFromListIntentRequestHandler extends CustomRequestHandler {
                     );
                 }
 
-                return $this->responseHelper->respond("Ich habe ".implode(" und ", $input)." von der To Do ".ucfirst($this->list)." entfernt.", true);
+                return $this->responseHelper->respond($this->locale->getText('skill.intent.removeItem', [ 'input' => implode(" ".$this->locale->getText("generic.and")." ", $input), 'list' => $this->locale->getText('skill.list.'.$this->list) ]), true);
 
             } else {
-                return $this->responseHelper->respond(implode(" und ", $input)." war nicht auf der To Do ".ucfirst($this->list), true);
+                return $this->responseHelper->respond($this->locale->getText('skill.intent.notOnList', [ 'input' => implode(" ".$this->locale->getText("generic.and")." ", $input), 'list' => $this->locale->getText('skill.list.'.$this->list) ]), true);
             }
             
         // Decode any exceptions Guzzle throws
@@ -162,7 +168,7 @@ class RemoveFromListIntentRequestHandler extends CustomRequestHandler {
             $response = $e->getResponse();
             $responseBodyAsString = $response->getBody()->getContents();
 
-            return $this->responseHelper->respond("Das hat leider nicht geklappt. Der Fehler lautet: " . $responseBodyAsString, true);
+            return $this->responseHelper->respond($this->locale->getText('skill.intent.error', [ 'error' => $responseBodyAsString ]), true);
 
             echo $responseBodyAsString;
             exit();

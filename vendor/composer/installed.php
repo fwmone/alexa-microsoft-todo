@@ -118,5 +118,14 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'utopia-php/locale' => array(
+            'pretty_version' => '0.6.0',
+            'version' => '0.6.0.0',
+            'reference' => '9de05231484ab29f61e6557e7ae494cbcf31cf41',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../utopia-php/locale',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
     ),
 );
