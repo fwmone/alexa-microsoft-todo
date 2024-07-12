@@ -65,7 +65,9 @@ class Utils {
                 }
             }
 
-            $result = $mysqli->query("INSERT INTO lists (userId, list, listId) VALUES ('".$request->session->user->userId."', '".$list."', '".$listId."') ON DUPLICATE KEY UPDATE listId='".$listId."'");
+            if ($listId != "") {
+                $result = $mysqli->query("INSERT INTO lists (userId, list, listId) VALUES ('".$request->session->user->userId."', '".$list."', '".$listId."') ON DUPLICATE KEY UPDATE listId='".$listId."'");
+            }
         }
 
         return $listId;
