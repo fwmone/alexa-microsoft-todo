@@ -75,6 +75,11 @@ class AddToListIntentRequestHandler extends CustomRequestHandler {
 
         // Wrap our HTTP request in a try/catch block so we can decode problems
         try {
+            if (!$this->listId) {
+                return $this->responseHelper->respond($this->locale->getText('skill.intent.error', [ 'error' => $this->locale->getText('skill.intent.error.nolist') ]), true);
+            }
+            
+            
             // Set up headers
             $headers = [
                 'Authorization' => 'Bearer ' . $request->session->user->accessToken,
@@ -100,9 +105,6 @@ class AddToListIntentRequestHandler extends CustomRequestHandler {
             $responseBodyAsString = $response->getBody()->getContents();
 
             return $this->responseHelper->respond($this->locale->getText('skill.intent.error', [ 'error' => $responseBodyAsString ]), true);
-
-            echo $responseBodyAsString;
-            exit();
         }
 
     }

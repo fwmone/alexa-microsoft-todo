@@ -10,6 +10,7 @@
     "skill.intent.removeItem": "Ich habe {{input}} von der To Do {{list}} entfernt.",
     "skill.intent.notOnList": "{{input}} war nicht auf der To Do {{list}}.",
     "skill.intent.error": "Das hat leider nicht geklappt. Der Fehler lautet: {{error}}",
+    "skill.intent.error.nolist": "Ich kann deine Liste leider nicht finden. Bitte stelle sicher, dass du deinen Microsoft-Account verknüpft hast. Bei Nutzung des Einkaufslisten-Skills muss die Liste entweder Einkaufsliste oder Einkaufszettel heißen.",
     
     "skill.standard.launch.hello": "Hallo! Du kannst mir jederzeit sagen, was ich zu deiner To Do-Liste hinzufügen soll.",
     "skill.standard.launch.noLinkedAccount": "Hallo! Bitte verknüpfe deinen Microsoft-Account mit diesem Skill über die Alexa-App oder die Amazon-Seite dieses Skills, um Einträge zu deiner To Do-Liste hinzufügen zu können.",
