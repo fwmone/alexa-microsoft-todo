@@ -9,6 +9,10 @@
     "skill.intent.addItem": "Ich habe {{input}} zur To Do {{list}} hinzugefügt.",
     "skill.intent.removeItem": "Ich habe {{input}} von der To Do {{list}} entfernt.",
     "skill.intent.notOnList": "{{input}} war nicht auf der To Do {{list}}.",
+    "skill.intent.getLongList": "Auf deiner To Do {{list}} sind mehr als {{count}} Einträge. Dies sind die ersten zehn davon: {{items}}",
+    "skill.intent.getList": "Auf deiner To Do {{list}} sind {{count}} Einträge, nämlich: {{items}}",
+    "skill.intent.getListOneItem": "Auf deiner To Do {{list}} ist ein Eintrag, nämlich: {{items}}",
+    "skill.intent.getListEmpty": "Deine To Do {{list}} ist leer",
     "skill.intent.error": "Das hat leider nicht geklappt. Der Fehler lautet: {{error}}",
     "skill.intent.error.nolist": "Ich kann deine Liste leider nicht finden. Bitte stelle sicher, dass du deinen Microsoft-Account verknüpft hast. Bei Nutzung des Einkaufslisten-Skills muss die Liste entweder Einkaufsliste oder Einkaufszettel heißen.",
     
@@ -16,5 +20,6 @@
     "skill.standard.launch.noLinkedAccount": "Hallo! Bitte verknüpfe deinen Microsoft-Account mit diesem Skill über die Alexa-App oder die Amazon-Seite dieses Skills, um Einträge zu deiner To Do-Liste hinzufügen zu können.",
     "skill.standard.sessionEnded": "Tschüss, bis zum nächsten Mal!",
 
-    "generic.and": "und"
+    "generic.and": "und",
+    "generic.nextListItem": ", "
 }
