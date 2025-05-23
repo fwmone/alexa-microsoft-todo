@@ -69,14 +69,19 @@ class AddToListIntentRequestHandler extends CustomRequestHandler {
     }
 
     public function handleRequest(Request $request): Response {
-        $this->listId = $this->utils->getList($request, $this->list, $this->locale);
-        $input = $this->utils->prepareInput($request->request->intent->slots[0]->value);
+        $itemAndList = $this->utils->extractItemAndList($this->locale, $this->list, $request->request->intent->slots[0]->value);
+        $input = $this->utils->prepareInput($this->locale, $itemAndList["item"]);
 
+        $this->listId = $this->utils->getList($request, $itemAndList["list"], $this->locale);
 
         // Wrap our HTTP request in a try/catch block so we can decode problems
         try {
             if (!$this->listId) {
-                return $this->responseHelper->respond($this->locale->getText('skill.intent.error', [ 'error' => $this->locale->getText('skill.intent.error.nolist') ]), true);
+                if ($itemAndList["customList"]) {
+                    return $this->responseHelper->respond($this->locale->getText('skill.intent.error.nocustomlist', [ 'list' => $itemAndList["list"] ]), true);
+                } else {
+                    return $this->responseHelper->respond($this->locale->getText('skill.intent.error', [ 'error' => $this->locale->getText('skill.intent.error.nolist') ]), true);
+                }
             }
             
             
@@ -85,7 +90,7 @@ class AddToListIntentRequestHandler extends CustomRequestHandler {
                 'Authorization' => 'Bearer ' . $request->session->user->accessToken,
             ];
 
-            foreach ($input as $key => $value) {
+            foreach ($input as $value) {
                 // Set up our request to the API
                 $response = $this->client->post(
                     'https://graph.microsoft.com/v1.0/me/todo/lists/'.$this->listId.'/tasks',
@@ -97,7 +102,11 @@ class AddToListIntentRequestHandler extends CustomRequestHandler {
 
             }
 
-            return $this->responseHelper->respond($this->locale->getText('skill.intent.addItem', [ 'input' => implode(" ".$this->locale->getText("generic.and")." ", $input), 'list' => $this->locale->getText('skill.list.'.$this->list) ]), true);
+            if ($itemAndList["customList"]) {
+                return $this->responseHelper->respond($this->locale->getText('skill.intent.addItem', [ 'input' => implode(" ".$this->locale->getText("generic.and")." ", $input), 'list' => $itemAndList["list"]." ".$this->locale->getText("skill.intent.addItem.list") ]), true);
+            } else {
+                return $this->responseHelper->respond($this->locale->getText('skill.intent.addItem', [ 'input' => implode(" ".$this->locale->getText("generic.and")." ", $input), 'list' => $this->locale->getText('skill.list.'.$this->list) ]), true);
+            }
 
         // Decode any exceptions Guzzle throws
         } catch (GuzzleHttp\Exception\ClientException $e) {
@@ -120,9 +129,10 @@ class RemoveFromListIntentRequestHandler extends CustomRequestHandler {
     }
 
     public function handleRequest(Request $request): Response {
-        $this->listId = $this->utils->getList($request, $this->list, $this->locale);
-        $input = $this->utils->prepareInput($request->request->intent->slots[0]->value);
+        $itemAndList = $this->utils->extractItemAndList($this->locale, $this->list, $request->request->intent->slots[0]->value);
+        $input = $this->utils->prepareInput($this->locale, $itemAndList["item"]);
 
+        $this->listId = $this->utils->getList($request, $itemAndList["list"], $this->locale);
 
         // Wrap our HTTP request in a try/catch block so we can decode problems
         try {
@@ -159,10 +169,18 @@ class RemoveFromListIntentRequestHandler extends CustomRequestHandler {
                     );
                 }
 
-                return $this->responseHelper->respond($this->locale->getText('skill.intent.removeItem', [ 'input' => implode(" ".$this->locale->getText("generic.and")." ", $input), 'list' => $this->locale->getText('skill.list.'.$this->list) ]), true);
+                if ($itemAndList["customList"]) {
+                    return $this->responseHelper->respond($this->locale->getText('skill.intent.removeItem', [ 'input' => implode(" ".$this->locale->getText("generic.and")." ", $input), 'list' => $itemAndList["list"]." ".$this->locale->getText("skill.intent.addItem.list") ]), true);
+                } else {
+                    return $this->responseHelper->respond($this->locale->getText('skill.intent.removeItem', [ 'input' => implode(" ".$this->locale->getText("generic.and")." ", $input), 'list' => $this->locale->getText('skill.list.'.$this->list) ]), true);
+                }
 
             } else {
-                return $this->responseHelper->respond($this->locale->getText('skill.intent.notOnList', [ 'input' => implode(" ".$this->locale->getText("generic.and")." ", $input), 'list' => $this->locale->getText('skill.list.'.$this->list) ]), true);
+                if ($itemAndList["customList"]) {
+                    return $this->responseHelper->respond($this->locale->getText('skill.intent.notOnList', [ 'input' => implode(" ".$this->locale->getText("generic.and")." ", $input), 'list' => $itemAndList["list"]." ".$this->locale->getText("skill.intent.addItem.list") ]), true);
+                } else {
+                    return $this->responseHelper->respond($this->locale->getText('skill.intent.notOnList', [ 'input' => implode(" ".$this->locale->getText("generic.and")." ", $input), 'list' => $this->locale->getText('skill.list.'.$this->list) ]), true);
+                }
             }
             
         // Decode any exceptions Guzzle throws
@@ -220,6 +238,64 @@ class getListIntentRequestHandler extends CustomRequestHandler {
                 return $this->responseHelper->respond($this->locale->getText('skill.intent.getListEmpty', [ 'list' => $this->locale->getText('skill.list.'.$this->list) ]), true);
             } else {
                 return $this->responseHelper->respond($this->locale->getText('skill.intent.getList', [ 'count' => $countListItems, 'items' => implode(" ".$this->locale->getText("generic.nextListItem")." ", $listItems), 'list' => $this->locale->getText('skill.list.'.$this->list) ]), true);
+            }
+
+            
+        // Decode any exceptions Guzzle throws
+        } catch (GuzzleHttp\Exception\ClientException $e) {
+            $response = $e->getResponse();
+            $responseBodyAsString = $response->getBody()->getContents();
+
+            return $this->responseHelper->respond($this->locale->getText('skill.intent.error', [ 'error' => $responseBodyAsString ]), true);
+
+            echo $responseBodyAsString;
+            exit();
+        }        
+
+    }
+}
+
+class getCustomListIntentRequestHandler extends CustomRequestHandler {
+    public function __construct(ResponseHelper $responseHelper, array $supportedApplicationIds, $list, $locale) {
+        parent::__construct($responseHelper, $supportedApplicationIds, $list, $locale);
+    }
+
+    public function supportsRequest(Request $request): bool {
+        return $request->request instanceof IntentRequest && 'GetCustomListIntent' === $request->request->intent->name;
+    }
+
+    public function handleRequest(Request $request): Response {
+        $this->listId = $this->utils->getList($request, $request->request->intent->slots[0]->value, $this->locale);
+
+
+        // Wrap our HTTP request in a try/catch block so we can decode problems
+        try {
+            // Set up headers
+            $headers = [
+                'Authorization' => 'Bearer ' . $request->session->user->accessToken,
+            ];
+
+            $response = $this->client->request(
+                'GET',
+                'https://graph.microsoft.com/v1.0/me/todo/lists/'.$this->listId.'/tasks?$filter=status ne \'completed\'',
+                array('headers' => $headers)
+            );
+
+            $rawlistItems = json_decode( $response->getBody() );
+            foreach ($rawlistItems->value as $item) {
+                $listItems[] = $item->title;
+            }
+            $countListItems = count($listItems);
+
+            if ($countListItems > 10) {
+                $reducedListItems = array_slice($listItems, 0, 10);
+                return $this->responseHelper->respond($this->locale->getText('skill.intent.getLongList', [ 'count' => $countListItems, 'items' => implode(" ".$this->locale->getText("generic.nextListItem")." ", $reducedListItems), 'list' => $request->request->intent->slots[0]->value." ".$this->locale->getText('skill.intent.addItem.list') ]), true);
+            } elseif ($countListItems == 1) {
+                return $this->responseHelper->respond($this->locale->getText('skill.intent.getListOneItem', [ 'count' => $countListItems, 'items' => implode(" ".$this->locale->getText("generic.nextListItem")." ", $listItems), 'list' => $request->request->intent->slots[0]->value." ".$this->locale->getText('skill.intent.addItem.list') ]), true);
+            } elseif ($countListItems == 0) {
+                return $this->responseHelper->respond($this->locale->getText('skill.intent.getListEmpty', [ 'list' => $request->request->intent->slots[0]->value." ".$this->locale->getText('skill.intent.addItem.list') ]), true);
+            } else {
+                return $this->responseHelper->respond($this->locale->getText('skill.intent.getList', [ 'count' => $countListItems, 'items' => implode(" ".$this->locale->getText("generic.nextListItem")." ", $listItems), 'list' => $request->request->intent->slots[0]->value." ".$this->locale->getText('skill.intent.addItem.list') ]), true);
             }
 
             

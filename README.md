@@ -16,7 +16,7 @@ A webserver, PHP 7+, composer (optional) and MySQL / MariaDB for the list databa
 
 ## Usage
 
-The skill supports the AddToListIntent, the RemoveFromListIntent and getListIntent. They must be added as intents to your skill and AddToListIntent/RemoveFromListIntent need to have {item} as AMAZON.SearchQuery slot. {item} will be the task name. getListIntent does not an an {item}, because it just returns what is on your list.
+The skill supports the AddToListIntent, the RemoveFromListIntent, getListIntent and getCustomListIntent. They must be added as intents to your skill and AddToListIntent/RemoveFromListIntent/getCustomListIntent need to have {item} as AMAZON.SearchQuery slot. {item} will be the task and optionally the list name. getListIntent does not an an {item}, because it just returns what is on your list.
 
 ## Contributing
 

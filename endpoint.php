@@ -50,6 +50,7 @@ if ($requestBody) {
     $addToListIntentRH = new AddToListIntentRequestHandler($responseHelper, $skillId, $list, $locale);
     $removeFromListIntentRH = new RemoveFromListIntentRequestHandler($responseHelper, $skillId, $list, $locale);
     $getListIntentRH = new getListIntentRequestHandler($responseHelper, $skillId, $list, $locale);
+    $getCustomListIntentRH = new getCustomListIntentRequestHandler($responseHelper, $skillId, $list, $locale);
 
     $launchRH = new LaunchRequestHandler($responseHelper, $skillId, $locale);
     $sessionEndedRH = new SessionEndedRequestHandler($responseHelper, $skillId, $locale);
@@ -65,6 +66,7 @@ if ($requestBody) {
         $addToListIntentRH,
         $removeFromListIntentRH,
         $getListIntentRH,
+        $getCustomListIntentRH,
         $launchRH,
         $sessionEndedRH,
         $cancelRH,

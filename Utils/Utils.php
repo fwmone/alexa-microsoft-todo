@@ -1,8 +1,32 @@
 <?
 
 class Utils {
-    public function prepareInput(string $input): array {
-        if (stristr($input, " und ")) {
+    public function extractItemAndList($locale, $defaultList, string $input) : array {
+        $rawInput = trim($input);
+
+        // Liste und Task trennen, wenn Listenmuster erkannt wird
+        $pattern = '/^(.*?)\s+(?:' . $locale->getText('skill.intent.addItem.list.possibilities') . ')\s+(.+?)\s+' . $locale->getText('skill.intent.addItem.list') . '$/i';
+    
+        if (preg_match($pattern, $rawInput, $matches)) {
+            $item = trim($matches[1]);
+            $list = preg_replace('/\s*' . $locale->getText('skill.intent.addItem.list') . '$/i', '', trim($matches[2]));  // " Liste" entfernen
+            return [
+                'item' => $item,
+                'list' => $list,
+                'customList' => true
+            ];
+        }
+    
+        // Kein Listenmuster erkannt → alles ist der Task, Standardliste
+        return [
+            'item' => $rawInput,
+            'list' => $defaultList,
+            'customList' => false
+        ];        
+    }
+
+    public function prepareInput($locale, string $input): array {
+        if (stristr($input, " " . $locale->getText("generic.and") . " ")) {
             $returnValue = array();
             array_walk(explode(" und ", $input), function ($value, $key) use (&$returnValue) {
                 $returnValue[$key] = ucfirst($value);
@@ -61,6 +85,11 @@ class Utils {
                             $listId = $myList->id;
                             break;
                         }
+                    }
+                } else {
+                    if (stristr($myList->displayName, $list)) {
+                        $listId = $myList->id;
+                        break;
                     }
                 }
             }

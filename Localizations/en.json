@@ -6,6 +6,9 @@
     "skill.help.intents": "The commands are: Say To Do {{list}} add milk and butter or say To Do {{list}} remove milk.",
     "skill.help.accountLinking": "Please link your Microsoft account to this skill via the Alexa app or the Amazon page of this skill to be able to add items to your To Do list.",
 
+    "skill.intent.addItem.list.possibilities": "to my|on the|to the|on my|of the|of my|from the|from my",
+    "skill.intent.addItem.list": "list",
+
     "skill.intent.addItem": "I've added {{input}} to the To Do {{list}}.",
     "skill.intent.removeItem": "I've removed {{input}} from the To Do {{list}}.",
     "skill.intent.notOnList": "{{input}} was not on the To Do {{list}}.",
@@ -15,6 +18,7 @@
     "skill.intent.getListEmpty": "Your To Do {{list}} is empty",
     "skill.intent.error": "Unfortunately, this did not work. The error is: {{error}}",
     "skill.intent.error.nolist": "Sorry, I can't find your list. Please make sure that you have linked your Microsoft account. When using the shopping list skill, the list must be named Shopping list.",
+    "skill.intent.error.nocustomlist": "Sorry, I can't find your {{list}} list.",
     
     "skill.standard.launch.hello": "Hello! You can always tell me what you want me to add to your To Do list.",
     "skill.standard.launch.noLinkedAccount": "Hello! Please link your Microsoft account to this skill via the Alexa app or the Amazon page of this skill to be able to add entries to your To Do list.",
