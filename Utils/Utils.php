@@ -49,6 +49,8 @@ class Utils {
     public function getList($request, $list, $locale) : string {
         require "_config.inc.php";
 
+        $listId = "";
+        
         $mysqli = new mysqli($config["database"]["host"], $config["database"]["user"], $config["database"]["password"], $config["database"]["database"]);
         $result = $mysqli->query("SELECT * FROM lists WHERE userId='".$request->session->user->userId."' AND list='".$list."'");
         while($obj = $result->fetch_object()) {
