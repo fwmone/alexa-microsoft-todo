@@ -28,7 +28,7 @@ class Utils {
     public function prepareInput($locale, string $input): array {
         if (stristr($input, " " . $locale->getText("generic.and") . " ")) {
             $returnValue = array();
-            array_walk(explode(" und ", $input), function ($value, $key) use (&$returnValue) {
+            array_walk(explode(" " . $locale->getText("generic.and") . " ", $input), function ($value, $key) use (&$returnValue) {
                 $returnValue[$key] = ucfirst($value);
             });
 
